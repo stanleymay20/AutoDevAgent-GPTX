@@ -1,0 +1,1 @@
+This is a user task manager with Flask + SQLite. UI should use Bootstrap.
