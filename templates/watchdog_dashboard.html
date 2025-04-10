@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>AI Watchdog Dashboard</title>
+  <link rel="stylesheet" href="/static/css/styles.css">
+  <style>
+    body {
+      background: #0f1117;
+      color: #eaeaea;
+      font-family: 'Segoe UI', sans-serif;
+      margin: 0;
+      padding: 0;
+    }
+
+    .watchdog-container {
+      max-width: 800px;
+      margin: 60px auto;
+      background: #1e1e2f;
+      padding: 30px;
+      border-radius: 10px;
+      color: #fff;
+      box-shadow: 0 0 20px #222;
+    }
+
+    h2 {
+      color: #6bd1ff;
+      margin-bottom: 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .bell {
+      font-size: 1.5rem;
+      animation: pulse 2s infinite;
+      color: #ffe978;
+    }
+
+    @keyframes pulse {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.2); }
+      100% { transform: scale(1); }
+    }
+
+    .suggestion {
+      background: #2a2a40;
+      margin-bottom: 15px;
+      padding: 15px;
+      border-radius: 5px;
+    }
+
+    .suggestion h4 {
+      margin: 0;
+      color: #ffe978;
+    }
+
+    .suggestion p {
+      margin: 5px 0;
+    }
+
+    .timestamp {
+      font-size: 0.9em;
+      color: #aaa;
+    }
+
+    .refresh-btn {
+      padding: 10px 20px;
+      background-color: #6bd1ff;
+      color: #000;
+      border: none;
+      border-radius: 5px;
+      font-weight: bold;
+      cursor: pointer;
+      margin-bottom: 20px;
+    }
+  </style>
+</head>
+<body>
+  <div class="watchdog-container">
+    <h2>
+      🔒 AI Watchdog Suggestions
+      <span class="bell" id="alertBell">🔔</span>
+    </h2>
+
+    <button class="refresh-btn" onclick="fetchSuggestions()">🔄 Manual Refresh</button>
+
+    <button class="refresh-btn" onclick="runAutoFix()">🔧 Fix Now (AI)</button>
+
+    <div id="suggestionBox">
+      <p>Loading suggestions...</p>
+    </div>
+  </div>
+
+  <script>
+    async function fetchSuggestions() {
+      const res = await fetch('/watchdog/data');
+      const suggestions = await res.json();
+      const box = document.getElementById('suggestionBox');
+      const bell = document.getElementById('alertBell');
+
+      if (!suggestions.length) {
+        box.innerHTML = '<p>No suggestions logged yet.</p>';
+        bell.style.display = 'none';
+        return;
+      }
+
+
+      bell.style.display = 'inline';
+      box.innerHTML = suggestions.reverse().map(s => `
+        <div class="suggestion">
+          <h4>${s.title}</h4>
+          <p>${s.detail}</p>
+          <p class="timestamp">🕒 ${s.timestamp}</p>
+        </div>
+      `).join('');
+    }
+
+    // Auto refresh every 10 seconds
+    setInterval(fetchSuggestions, 10000);
+    window.onload = fetchSuggestions;
+  </script>
+  
+
+  <script>
+    async function runAutoFix() {
+      const res = await fetch('/autofix/run');
+      alert("✅ AutoFix triggered. Check logs for patches.");
+      fetchSuggestions();  // Refresh
+    }
+  </script>
+  
+
+</body>
+</html>

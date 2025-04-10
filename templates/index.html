@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>AutoDevAgent-GPTX | Task Engine</title>
+    <link rel="stylesheet" href="/static/css/styles.css">
+</head>
+<body>
+    <div class="container">
+        <h1>🧠 AutoDevAgent-GPTX</h1>
+        <p>Your autonomous AI Dev Agent – task manager mode.</p>
+
+        <!-- Add Task Form -->
+        <form action="/add" method="POST">
+            <input type="text" name="title" placeholder="Enter new task..." required>
+            <button type="submit">➕ Add</button>
+        </form>
+
+        <!-- Voice Upload -->
+        <form action="/upload" method="POST" enctype="multipart/form-data" class="voice-form">
+            <input type="file" name="file" accept="audio/*" required>
+            <button type="submit">🎤 Upload Voice Task</button>
+        </form>
+
+        <!-- Task List -->
+        <ul>
+            {% for task in tasks %}
+                <li>
+                    <span class="{{ 'completed' if task.complete else '' }}">{{ task.title }}</span>
+                    <div class="actions">
+                        <form action="/toggle/{{ task.id }}" method="POST">
+                            <button type="submit">✔️</button>
+                        </form>
+                        <a href="/delete/{{ task.id }}"><button>🗑️</button></a>
+                    </div>
+                </li>
+            {% endfor %}
+        </ul>
+    </div>
+</body>
+</html>

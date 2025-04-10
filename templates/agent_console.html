@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Agent Console</title>
+  <link rel="stylesheet" href="/static/css/styles.css">
+</head>
+<body>
+  <div class="console-wrapper">
+    <h2>AutoDevAgent Console</h2>
+    <p>Live terminal for autonomous GPT execution</p>
+
+    <textarea id="console-input" placeholder="Enter GPTX directive..."></textarea>
+    <button onclick="sendCommand()">Run</button>
+
+    <div class="output-console">
+      <pre id="console-output">Awaiting instruction...</pre>
+    </div>
+  </div>
+
+  <script src="/static/js/main.js"></script>
+</body>
+</html>

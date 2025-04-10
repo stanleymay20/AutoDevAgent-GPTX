@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>AutoDevAgent-GPTX Dashboard</title>
+  <link rel="stylesheet" href="/static/css/styles.css">
+</head>
+<body>
+  <div class="dashboard-container">
+    <h1>🧠 AutoDevAgent-GPTX</h1>
+    <p>Mission Control Panel for Autonomous Execution</p>
+
+    <!-- 🔄 Agent Status -->
+    <div class="status">
+      <p><strong>Status:</strong> <span id="status">Idle</span></p>
+    </div>
+
+    <!-- ✏️ Mission Task Entry -->
+    <form id="task-form" method="POST" action="/dashboard/code">
+      <textarea id="task-input" name="user_input" placeholder="Type your mission or ask the agent to build..." required></textarea>
+      <button type="submit">🚀 Execute Task</button>
+    </form>
+
+    <!-- 🎤 Voice Upload -->
+    <form id="voice-form" action="/upload" method="POST" enctype="multipart/form-data" class="voice-form">
+      <input type="file" name="file" accept="audio/*" required />
+      <button type="submit">🎤 Upload Voice Task</button>
+    </form>
+
+    <!-- 🤖 Agent Response Display -->
+    <div id="response-box">
+      <h3>🧠 AI Agent Response</h3>
+      <pre id="agent-response">{% if response %}{{ response }}{% else %}Waiting for input...{% endif %}</pre>
+    </div>
+
+    <!-- 📋 Task Overview -->
+    <h3>📋 Task List</h3>
+    <ul>
+      {% for task in tasks %}
+        <li>
+          <span class="{{ 'completed' if task.complete else '' }}">{{ task.title }}</span>
+          <div class="actions">
+            <form action="/toggle/{{ task.id }}" method="POST" style="display:inline;">
+              <button type="submit">✔️</button>
+            </form>
+            <a href="/delete/{{ task.id }}"><button>🗑️</button></a>
+          </div>
+        </li>
+      {% endfor %}
+    </ul>
+  </div>
+
+  <script src="/static/js/main.js"></script>
+</body>
+</html>

@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Voice Command Mode</title>
+  <link rel="stylesheet" href="/static/css/styles.css">
+</head>
+<body>
+  <div class="voice-ui">
+    <h2>Voice Command Center</h2>
+    <p>Talk to your AI agent and watch it respond in real-time.</p>
+
+    <button id="start-recording">Start Listening</button>
+    <button id="stop-recording">Stop</button>
+
+    <div id="transcript-box">
+      <h3>Transcript</h3>
+      <p id="transcript">...</p>
+    </div>
+
+    <div id="voice-response-box">
+      <h3>Agent Response</h3>
+      <pre id="voice-response">Awaiting input...</pre>
+    </div>
+  </div>
+
+  <script src="/static/js/main.js"></script>
+</body>
+</html>

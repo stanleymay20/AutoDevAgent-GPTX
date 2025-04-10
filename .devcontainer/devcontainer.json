@@ -1,0 +1,7 @@
+{
+  "name": "AutoDevAgent-GPTX",
+  "forwardPorts": [5050],
+  "settings": {
+    "terminal.integrated.shell.linux": "/bin/bash"
+  }
+}

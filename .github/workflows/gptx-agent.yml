@@ -1,0 +1,33 @@
+name: AutoDevAgent-GPTX Runner
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+  schedule:
+    - cron: "0 * * * *"  # Every hour
+
+jobs:
+  run-agent:
+    runs-on: ubuntu-latest
+    steps:
+      - name: ⬇️ Checkout code
+        uses: actions/checkout@v3
+
+      - name: 🐍 Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.12'
+
+      - name: 📦 Install dependencies
+        run: |
+          pip install -r requirements.txt || pip install openai python-dotenv
+
+      - name: 🔐 Set environment key
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+        run: echo "OPENAI_API_KEY=$OPENAI_API_KEY" > .env
+
+      - name: 🧠 Run GPTX agent
+        run: python dev_agent.py
