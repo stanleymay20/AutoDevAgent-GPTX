@@ -5,26 +5,36 @@ from datetime import datetime
 from dotenv import load_dotenv
 from openai import OpenAI
 
-# === Load environment variables ===
-load_dotenv()
-client = OpenAI()  # Assumes OPENAI_API_KEY is set in .env
+# === Initialize .env if needed ===
+if not os.path.exists(".env"):
+    with open(".env", "w") as f:
+        f.write(f"OPENAI_API_KEY={os.getenv('OPENAI_API_KEY', '')}\n")
 
-# === Configurable Paths ===
+# === Load environment ===
+load_dotenv()
+OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
+if not OPENAI_API_KEY:
+    raise EnvironmentError("❌ Missing OPENAI_API_KEY in .env or environment.")
+
+client = OpenAI(api_key=OPENAI_API_KEY)
+
+# === Config ===
 TASK_FILE = "context/current_task.txt"
 CONTEXT_FILE = "context/project_context.txt"
 LOG_FILE = "context/task_log.txt"
 OUTPUT_DIR = "logs"
-CYCLE_DELAY = int(os.getenv("CYCLE_DELAY", 60))  # seconds
+CYCLE_DELAY = int(os.getenv("CYCLE_DELAY", 60))  # Default: 60s
 
-# === Setup ===
+# === Ensure directories and files ===
+os.makedirs("context", exist_ok=True)
 os.makedirs(OUTPUT_DIR, exist_ok=True)
+for file in [TASK_FILE, CONTEXT_FILE, LOG_FILE]:
+    if not os.path.exists(file):
+        open(file, "w").close()
 
-# === Utility Functions ===
+# === Utility functions ===
 def read_file(path):
-    if os.path.exists(path):
-        with open(path, "r", encoding="utf-8") as f:
-            return f.read()
-    return ""
+    return open(path, "r", encoding="utf-8").read() if os.path.exists(path) else ""
 
 def write_file(path, content):
     with open(path, "w", encoding="utf-8") as f:
@@ -58,7 +68,7 @@ def ask_gpt(task, context):
 
     return response.choices[0].message.content.strip()
 
-# === Git Commit & Save Output ===
+# === Save output & commit ===
 def save_and_commit(output):
     filename = f"{OUTPUT_DIR}/gpt_output_{datetime.now().strftime('%Y%m%d_%H%M%S')}.txt"
     write_file(filename, output)
@@ -73,7 +83,7 @@ def save_and_commit(output):
 
 # === Main Agent Loop ===
 def run_agent():
-    print("\033[96m[🧠 GPTX AGENT] Starting AutoDevAgent-GPTX loop...\033[0m")
+    print("\033[96m[🧠 GPTX AGENT] AutoDevAgent-GPTX is now active...\033[0m")
 
     try:
         while True:
@@ -90,7 +100,7 @@ def run_agent():
             append_to_log(output)
             save_and_commit(output)
 
-            print("\033[90m[🌙 SLEEPING] Task cycle complete. Waiting for next...\033[0m")
+            print("\033[90m[🌙 SLEEPING] Cycle complete. Waiting {CYCLE_DELAY}s...\033[0m")
             time.sleep(CYCLE_DELAY)
 
     except KeyboardInterrupt:
@@ -98,6 +108,6 @@ def run_agent():
     except Exception as e:
         print(f"\033[91m[💥 ERROR] Unexpected issue: {e}\033[0m")
 
-# === Entry Point ===
+# === Start ===
 if __name__ == "__main__":
     run_agent()
