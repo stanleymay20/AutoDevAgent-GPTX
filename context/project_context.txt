@@ -1,1 +1,1 @@
-This is a user task manager with Flask + SQLite. UI should use Bootstrap.
+AutoDevAgent-GPTX is a full-stack autonomous dev assistant built with Flask. The frontend allows users to input tasks or upload audio. The backend should expose API endpoints to get, post, and list tasks, and process whisper audio uploads.

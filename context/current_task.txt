@@ -1,1 +1,1 @@
-Build a Flask app with login, registration, and a dashboard.
+Finish the backend API for task submission and retrieval.
